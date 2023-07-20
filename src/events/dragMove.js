@@ -2,17 +2,20 @@ import closestValueToSnap from '../utils/closestValueToSnap';
 import eventListener from '../utils/eventListener';
 import returnPositionString from '../utils/returnPositionString';
 import vueDragEvent from '../utils/vueDragEvent';
+import getPositionBoundary from '../utils/getPositionBoundary';
 
 export function updatePosition(x, y) {
   // Store relative coordinates
   window.data.relativeX = window.data.mouseX * x;
   window.data.relativeY = window.data.mouseY * y;
 
+  const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
   // Apply transformation to move element
   window.data.move.style.transform = returnPositionString(
     window.data.matrix,
-    window.data.matrixX + closestValueToSnap(window.data.relativeX, 'x'),
-    window.data.matrixY + closestValueToSnap(window.data.relativeY, 'y'),
+    getPositionBoundary({ value: window.data.matrixX + closestValueToSnap(window.data.relativeX, 'x'), max: windowWidth }),
+    getPositionBoundary({ value: window.data.matrixY + closestValueToSnap(window.data.relativeY, 'y'), max: windowHeight, axis: 'y' }),
   );
 
   // Vue event on drag moving

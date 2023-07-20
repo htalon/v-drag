@@ -6,6 +6,7 @@ import returnPositionString from '../utils/returnPositionString';
 import updateMousePosition from '../utils/updateMousePosition';
 import vueDragEvent from '../utils/vueDragEvent';
 import closestValueToSnap from '../utils/closestValueToSnap';
+import getPositionBoundary from '../utils/getPositionBoundary';
 
 export default function () {
   // Prevent TypeError from showing
@@ -17,11 +18,13 @@ export default function () {
   // Remove setUpMovement() if mouse/touch hasn't moved
   eventListener(['mousemove', 'touchmove'], dragMove, 'remove');
 
+  const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
   // Replace transform properties with left and top
   moveElementTransform(
     window.data.matrix ? returnPositionString(window.data.matrix, 0, 0) : 'none',
-    `${window.data.matrixX + closestValueToSnap(window.data.relativeX, 'x')}px`,
-    `${window.data.matrixY + closestValueToSnap(window.data.relativeY, 'y')}px`,
+    `${getPositionBoundary({ value: window.data.matrixX + closestValueToSnap(window.data.relativeX, 'x'), max: windowWidth })}px`,
+    `${getPositionBoundary({ value: window.data.matrixY + closestValueToSnap(window.data.relativeY, 'y'), max: windowHeight, axis: 'y' })}px`,
   );
 
   // Remove CSS classes

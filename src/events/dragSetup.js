@@ -13,6 +13,10 @@ export default function (el, binding) {
   const handleArray = [];
   let axis;
 
+  if (typeof value.moveInWindow === 'boolean') {
+    window.data.moveInWindow = !!value.moveInWindow;
+  }
+
   // Update axis value
   if (value instanceof Object && value.axis && isValidAxisValue(value.axis)) {
     axis = value.axis;
